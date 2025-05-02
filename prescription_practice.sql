@@ -1,0 +1,70 @@
+SELECT COUNT(drug_name)
+FROM drug;
+
+SELECT COUNT(DISTINCT drug_name)
+FROM drug;
+
+
+--1. 
+--A.
+SELECT npi, SUM(total_claim_count) AS total_claims
+FROM prescription
+GROUP BY npi
+ORDER BY total_claims desc;
+
+--B.
+SELECT nppes_provider_first_name, nppes_provider_last_org_name, specialty_description, SUM(total_claim_count) AS total_claims
+FROM prescription
+INNER JOIN prescriber
+USING(npi)
+GROUP BY nppes_provider_first_name, nppes_provider_last_org_name, specialty_description
+ORDER BY total_claims desc;
+
+
+--2.
+--A.
+SELECT specialty_description, sum(total_claim_count) as total_claims
+FROM prescription
+INNER JOIN prescriber
+USING(npi)
+GROUP BY specialty_description
+order by total_claims desc;
+
+--B.
+SELECT specialty_description, sum(total_claim_count) as total_claims
+FROM prescription
+INNER JOIN prescriber
+USING(npi)
+INNER JOIN drug
+USING(drug_name)
+WHERE opioid_drug_flag = 'Y'
+GROUP BY specialty_description
+ORDER BY total_claims DESC;
+
+--C.
+SELECT specialty_description
+FROM prescriber
+LEFT JOIN prescription
+USING(npi)
+GROUP BY specialty_description
+HAVING SUM(total_claim_count) IS NULL;
+
+--D.
+
+--3.
+--A.
+SELECT generic_name, sum(total_drug_cost)::money AS total_cost
+FROM prescription
+INNER JOIN drug
+USING (drug_name)
+GROUP BY generic_name
+ORDER BY total_cost DESC;
+
+--B.
+SELECT generic_name, (SUM(total_drug_cost) / SUM(total_day_supply))::money as day_cost
+FROM prescription
+INNER JOIN drug
+USING(drug_name)
+GROUP BY generic_name
+ORDER BY day_cost DESC
+

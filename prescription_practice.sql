@@ -66,5 +66,29 @@ FROM prescription
 INNER JOIN drug
 USING(drug_name)
 GROUP BY generic_name
-ORDER BY day_cost DESC
+ORDER BY day_cost DESC;
+
+--4.
+--A.
+SELECT drug_name,
+CASE
+	WHEN opioid_drug_flag = 'Y' then 'opioid'
+	WHEN antibiotic_drug_flag = 'Y' then 'antibiotic' else 'neither' 
+END AS drug_type
+FROM drug;
+
+--B.
+SELECT
+CASE
+	WHEN opioid_drug_flag = 'Y' then 'opioid'
+	WHEN antibiotic_drug_flag = 'Y' then 'antibiotic' else 'neither' 
+END AS drug_type, sum(total_drug_cost)::MONEY AS total_cost 
+FROM drug
+INNER JOIN prescription
+USING (drug_name)
+WHERE opioid_drug_flag = 'Y' OR antibiotic_drug_flag = 'Y'
+GROUP BY drug_type 
+ORDER BY total_cost DESC;
+
+
 

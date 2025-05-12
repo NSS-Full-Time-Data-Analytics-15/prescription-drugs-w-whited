@@ -90,5 +90,31 @@ WHERE opioid_drug_flag = 'Y' OR antibiotic_drug_flag = 'Y'
 GROUP BY drug_type 
 ORDER BY total_cost DESC;
 
+--5.
+--A.
+SELECT COUNT(*)
+FROM cbsa
+WHERE cbsaname like '%TN';
+
+--B.
+SELECT cbsaname, SUM(population) as total_population
+FROM cbsa
+INNER JOIN population 
+USING (fipscounty)
+GROUP BY cbsaname
+ORDER BY total_population DESC;
+
+SELECT cbsaname, SUM(population) as total_population
+FROM cbsa
+INNER JOIN population 
+USING (fipscounty)
+GROUP BY cbsaname
+ORDER BY total_population ASC;
+
+--C.
+
+
+
+
 
 

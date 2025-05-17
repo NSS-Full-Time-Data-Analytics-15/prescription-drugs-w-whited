@@ -112,7 +112,15 @@ GROUP BY cbsaname
 ORDER BY total_population ASC;
 
 --C.
-
+SELECT county, population
+FROM cbsa
+RIGHT JOIN population
+USING (fipscounty)
+INNER JOIN fips_county
+USING(fipscounty)
+WHERE cbsa IS NULL
+ORDER BY population DESC
+LIMIT 1
 
 
 
